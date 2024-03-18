@@ -1,0 +1,56 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    list-style: none;
+    text-decoration: none;
+    font-family: sans-serif;
+    color: inherit;
+    position: relative;
+}
+
+html{
+    height: 100vh;
+}
+body{
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+input{
+    display: none;
+}
+main{}
+
+#maps{
+    width: 600px;
+    aspect-ratio: 1/1;
+    border: 4px solid blue;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.px{
+    display: inline-block;
+    border: 1px solid #000;
+    aspect-ratio: 1/1;
+    flex: none;
+}
+.px.fechado::before{
+    content: '';
+    display: block;
+    width: 10px;
+    aspect-ratio: 1/1;
+    border-radius: 20px;
+    background-color: red;
+}
+
+.px.path{
+    background-color: green !important;
+}
+.px.path::before{
+    display: none;
+}

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <script defer src="labirinto.js"></script>
+    <script defer src="hunter.js"></script>
+    <title>Labirinto</title>
+</head>
+
+<body>
+    <main>
+        <div id="maps"></div>
+        <div id="input">
+            <input type="range" name="range" id="range" value="15" min="5" max="20" />
+            <input type="radio" value="1" name="oper" /> Lapis
+            <input type="radio" value="0" name="oper" /> Borracha
+            <input type="radio" value="9" name="oper" /> Objetivo
+            <input type="radio" value="8" name="oper" checked /> Inicio
+            <button id="path">Fazer caminho</button>
+        </div>
+    </main>
+</body>
+
+</html>
