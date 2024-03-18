@@ -19,11 +19,6 @@ body{
     justify-content: center;
 }
 
-input[type="range"]{
-    display: none;
-}
-main{}
-
 #maps{
     width: 600px;
     aspect-ratio: 1/1;

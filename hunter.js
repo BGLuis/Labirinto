@@ -100,7 +100,6 @@ async function explore() {
             open = open.toSpliced(open.indexOf(atual),1);
             console.log(open)
             close.push(atual);
-    
             
             if(atual == goal){
                 break;
@@ -120,7 +119,6 @@ async function explore() {
 
 function markThePath(){
     let mark = goal.getAttribute("path").split(',')
-    console.log(mark);
     close.forEach(element => {
         if(mark.includes(element.getAttribute("number"))){
             element.classList.add("path")
@@ -128,7 +126,6 @@ function markThePath(){
         }
     });
 }
-
 
 path.addEventListener("click",()=>{
     explore()

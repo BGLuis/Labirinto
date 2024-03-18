@@ -6,9 +6,10 @@ const operacao = document.querySelector("#oper")
 function makeMaze(){
     maps.innerHTML="";
     let cont = 0;
+    const width = maps.clientWidth/range.value;
     for (let y = 0; y < range.value; y++) {
         for (let x = 0; x < range.value; x++) {
-            maps.innerHTML+=`<div style="width: ${maps.clientWidth/range.value}px;" number="${cont}" x="${x}" y="${y}" cell="0" status="0" g class="px"></div>`;
+            maps.innerHTML+=`<div style="width: ${width}px;" number="${cont}" x="${x}" y="${y}" cell="0" status="0" g class="px"></div>`;
             cont++;
         }
     }
@@ -53,9 +54,6 @@ clear.addEventListener("click",()=>{
     makeMaze()
 })
 
-// range.addEventListener("input",makeMaze());
-range.addEventListener("change",()=>{
-    if(maps.innerHTML == ""){
-        makeMaze()
-    }
+range.addEventListener("click",()=>{
+    makeMaze()
 });
