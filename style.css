@@ -19,7 +19,7 @@ body{
     justify-content: center;
 }
 
-input{
+input[type="range"]{
     display: none;
 }
 main{}
