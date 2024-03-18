@@ -1,4 +1,5 @@
 const range = document.querySelector("#range")
+const clear = document.querySelector("#clear")
 const maps = document.querySelector("#maps")
 const operacao = document.querySelector("#oper")
 
@@ -28,7 +29,7 @@ function makeMaze(){
                     quadrante.setAttribute("cell",0);
                     break;
                 case "8":
-                    document.querySelectorAll('#maps .px[value="5"]').forEach(element => {
+                    document.querySelectorAll('#maps .px[cell="8"]').forEach(element => {
                         element.style.background = "#fff";
                         element.setAttribute("cell",0);
                     });
@@ -36,7 +37,7 @@ function makeMaze(){
                     quadrante.setAttribute("cell",8);
                 break;
                 case "9":
-                    document.querySelectorAll('#maps .px[value="10"]').forEach(element => {
+                    document.querySelectorAll('#maps .px[cell="9"]').forEach(element => {
                         element.style.background = "#fff";
                         element.setAttribute("cell",0);
                     });
@@ -48,7 +49,13 @@ function makeMaze(){
     });
 }
 
-// range.addEventListener("input",makeMaze());
-range.addEventListener("change",makeMaze());
+clear.addEventListener("click",()=>{
+    makeMaze()
+})
 
-// makeMaze();
+// range.addEventListener("input",makeMaze());
+range.addEventListener("change",()=>{
+    if(maps.innerHTML == ""){
+        makeMaze()
+    }
+});

@@ -7,6 +7,11 @@ const cost = 1;
 
 function mazeJson() {
     map = [];
+    open = [];
+    close = [];
+    goal = null;
+    let obj = 0;
+    let ini = 0;
     for (let x = 0; x < range.value; x++) {
         const blocks = document.querySelectorAll(`#maps .px[x="${x}"]`);
         let valores =[];
@@ -16,20 +21,24 @@ function mazeJson() {
                 b.setAttribute("g",0);
                 b.setAttribute("status",0);
                 open.push(b)
+                ini++
             }
             if(cell == 9) {
                 goal = b;
+                obj++
             } 
             valores.push(b);
         });
         map.push(valores)
     }
+    if(obj == 1 && ini == 1){
+        return true
+    }
+    return false
 }
 
 
 function distancia(cell) {
-    console.log(goal)
-    console.log(cell)
     return Math.sqrt(Math.pow(parseInt(goal.getAttribute("x"))-parseInt(cell.getAttribute("x")),2)+Math.pow(parseInt(goal.getAttribute("y"))-parseInt(cell.getAttribute("y")),2))
 }
 function openCells(atual) {
@@ -79,30 +88,34 @@ function minorValue(grup) {
 }
 
 async function explore() {
-    mazeJson();
-    while (open.length > 0) {
-        let atual = minorValue(open);
-        console.log(atual)
-        
-        atual.classList.add("fechado")
-        atual.setAttribute("status",1)
-        atual.innerHTML = atual.getAttribute("g");
-        
-        open = open.toSpliced(open.indexOf(atual),1);
-        console.log(open)
-        close.push(atual);
-
-        
-        if(atual == goal){
-            break;
+    if(mazeJson()){
+        while (open.length > 0) {
+            let atual = minorValue(open);
+            console.log(atual)
+            
+            atual.classList.add("fechado")
+            atual.setAttribute("status",1)
+            atual.innerHTML = atual.getAttribute("g");
+            
+            open = open.toSpliced(open.indexOf(atual),1);
+            console.log(open)
+            close.push(atual);
+    
+            
+            if(atual == goal){
+                break;
+            }
+            else{
+                openCells(atual);
+            }
+            await sleep(50)
         }
-        else{
-            openCells(atual);
-        }
-        await sleep(50)
+        console.log("fim")
+        markThePath()
     }
-    console.log("fim")
-    markThePath()
+    else{
+        alert("Mapa invalido")
+    }
 }
 
 function markThePath(){
@@ -114,9 +127,6 @@ function markThePath(){
             element.innerHTML = "";
         }
     });
-    for (let index = 0; index < goal.getAttribute("number"); index++) {
-
-    }
 }
 
 
