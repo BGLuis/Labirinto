@@ -1,9 +1,18 @@
-const path = document.querySelector("#path")
-let map=[];
-let open=[];
-let close=[];
+const pathBtn = document.querySelector("#path");
+let map = [];
+let open = [];
+let close = [];
 let goal;
 const cost = 1;
+
+function getSettings() {
+    const heuristicSelect = document.querySelector("#heuristic");
+    const heatmapCheck = document.querySelector("#heatmap");
+    return {
+        heuristic: heuristicSelect ? heuristicSelect.value : 'euclidean',
+        heatmap: heatmapCheck ? heatmapCheck.checked : false
+    };
+}
 
 function mazeJson() {
     map = [];
@@ -12,124 +21,184 @@ function mazeJson() {
     goal = null;
     let obj = 0;
     let ini = 0;
-    for (let x = 0; x < range.value; x++) {
+
+    const rangeVal = document.querySelector("#range").value;
+
+    for (let x = 0; x < rangeVal; x++) {
         const blocks = document.querySelectorAll(`#maps .px[x="${x}"]`);
-        let valores =[];
-        blocks.forEach(b => {
+
+        const sortedBlocks = Array.from(blocks).sort((a, b) => {
+            return parseInt(a.getAttribute('y')) - parseInt(b.getAttribute('y'));
+        });
+
+        let valores = [];
+        sortedBlocks.forEach(b => {
+            b.classList.remove("fechado", "path");
+            b.style.backgroundColor = "";
+            b.innerHTML = "";
+
             var cell = b.getAttribute("cell");
-            if(cell == 8) {
-                b.setAttribute("g",0);
-                b.setAttribute("status",0);
-                open.push(b)
-                ini++
+
+            if (cell == "1") b.style.background = "#000";
+            else if (cell == "8") b.style.background = "#0000ff";
+            else if (cell == "9") b.style.background = "#4ff54f";
+            else b.style.background = "#fff";
+
+            if(cell == 8) { // Início
+                b.setAttribute("g", 0);
+                b.setAttribute("status", 0);
+                b.setAttribute("path", b.getAttribute("number")); // Caminho começa nele mesmo
+                open.push(b);
+                ini++;
             }
-            if(cell == 9) {
+            if(cell == 9) { // Objetivo
                 goal = b;
-                obj++
-            } 
+                obj++;
+            }
             valores.push(b);
         });
-        map.push(valores)
+        map.push(valores);
     }
+
     if(obj == 1 && ini == 1){
-        return true
+        return true;
     }
-    return false
+    alert("Defina 1 Início (Azul) e 1 Objetivo (Verde)!");
+    return false;
 }
 
+function calculateHeuristic(cell) {
+    const type = getSettings().heuristic;
 
-function distancia(cell) {
-    return Math.sqrt(Math.pow(parseInt(goal.getAttribute("x"))-parseInt(cell.getAttribute("x")),2)+Math.pow(parseInt(goal.getAttribute("y"))-parseInt(cell.getAttribute("y")),2))
+    const x1 = parseInt(cell.getAttribute("x"));
+    const y1 = parseInt(cell.getAttribute("y"));
+    const x2 = parseInt(goal.getAttribute("x"));
+    const y2 = parseInt(goal.getAttribute("y"));
+
+    if (type === 'dijkstra') {
+        return 0;
+    } else if (type === 'manhattan') {
+        return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+    } else {
+        return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+    }
 }
+
 function openCells(atual) {
     var x = parseInt(atual.getAttribute("x"));
     var y = parseInt(atual.getAttribute("y"));
-    var baixo = map.length
-    var cima = -1
-    var direita = map[0].length
-    var esquerda    = -1
 
-    // baixo
-    if(y+1 < baixo && map[x][y+1].getAttribute("g") != 1 && map[x][y+1].getAttribute("status") == 0 && map[x][y+1].getAttribute("cell") != 1){
-        open.push(map[x][y+1]);
-        map[x][y+1].setAttribute("g",parseInt(atual.getAttribute("g"))+cost)
-        map[x][y+1].setAttribute("path",atual.getAttribute("path")+","+map[x][y+1].getAttribute("number"))
-    } 
-    // cima
-    if(y-1 > cima && map[x][y-1].getAttribute("g") != 1 && map[x][y-1].getAttribute("status") == 0 && map[x][y-1].getAttribute("cell") != 1){
-        open.push(map[x][y-1]);
-        map[x][y-1].setAttribute("g",parseInt(atual.getAttribute("g"))+cost)
-        map[x][y-1].setAttribute("path",atual.getAttribute("path")+","+map[x][y-1].getAttribute("number"))
-    } 
-    // direita
-    if(x+1 < direita && map[x+1][y].getAttribute("g") != 1 && map[x+1][y].getAttribute("status") == 0 && map[x+1][y].getAttribute("cell") != 1){
-        open.push(map[x+1][y]);
-        map[x+1][y].setAttribute("g",parseInt(atual.getAttribute("g"))+cost)
-        map[x+1][y].setAttribute("path",atual.getAttribute("path")+","+map[x+1][y].getAttribute("number"))
-    } 
-    // esqurda
-    if(x-1 > esquerda && map[x-1][y].getAttribute("g") != 1 && map[x-1][y].getAttribute("status") == 0 && map[x-1][y].getAttribute("cell") != 1){
-        open.push(map[x-1][y]);
-        map[x-1][y].setAttribute("g",parseInt(atual.getAttribute("g"))+cost)
-        map[x-1][y].setAttribute("path",atual.getAttribute("path")+","+map[x-1][y].getAttribute("number"))
-    } 
-}
+    const vizinhos = [
+        { dx: 0, dy: 1 },
+        { dx: 0, dy: -1 },
+        { dx: 1, dy: 0 },
+        { dx: -1, dy: 0 }
+    ];
 
-function minorValue(grup) {
-    var min = Number.MAX_VALUE;
-    let cellMin = -1
-    grup.forEach(cell => {
-        if(min > ((parseInt(cell.getAttribute("g")))/3 + distancia(cell))){
-            min = ((parseInt(cell.getAttribute("g")))/3 + distancia(cell));
-            cellMin = cell;
+    vizinhos.forEach(dir => {
+        const nx = x + dir.dx;
+        const ny = y + dir.dy;
+
+        if (nx >= 0 && nx < map.length && ny >= 0 && ny < map[0].length) {
+            const vizinho = map[nx][ny];
+
+            if (vizinho.getAttribute("cell") != 1 && vizinho.getAttribute("status") == 0) {
+
+                if (!open.includes(vizinho)) {
+                    vizinho.setAttribute("g", parseInt(atual.getAttribute("g")) + cost);
+                    vizinho.setAttribute("path", atual.getAttribute("path") + "," + vizinho.getAttribute("number"));
+                    open.push(vizinho);
+                }
+            }
         }
     });
-    return cellMin;
+}
+
+function getBestNode(nodes) {
+    let minF = Number.MAX_VALUE;
+    let bestNode = null;
+
+    nodes.forEach(cell => {
+        const g = parseInt(cell.getAttribute("g"));
+        const h = calculateHeuristic(cell);
+        const f = g + h;
+
+        if (f < minF) {
+            minF = f;
+            bestNode = cell;
+        }
+    });
+    return bestNode;
+}
+
+function getHeatColor(g) {
+    const hue = Math.max(0, 240 - (g * 5));
+    return `hsl(${hue}, 100%, 50%)`;
 }
 
 async function explore() {
-    if(mazeJson()){
-        while (open.length > 0) {
-            let atual = minorValue(open);
-            console.log(atual)
-            
-            atual.classList.add("fechado")
-            atual.setAttribute("status",1)
-            atual.innerHTML = atual.getAttribute("g");
-            
-            open = open.toSpliced(open.indexOf(atual),1);
-            console.log(open)
-            close.push(atual);
-            
-            if(atual == goal){
-                break;
+    if(!mazeJson()) return;
+
+    const settings = getSettings();
+
+    while (open.length > 0) {
+        let atual = getBestNode(open);
+
+        open.splice(open.indexOf(atual), 1);
+
+        close.push(atual);
+
+        atual.classList.add("fechado");
+        atual.setAttribute("status", 1);
+
+        if (atual != goal && atual.getAttribute("cell") != 8) {
+            if (settings.heatmap) {
+                const g = parseInt(atual.getAttribute("g"));
+                atual.style.backgroundColor = getHeatColor(g);
+                atual.classList.add("heatmap-active");
             }
-            else{
-                openCells(atual);
-            }
-            await sleep(50)
+             atual.innerHTML = atual.getAttribute("g");
+             atual.style.fontSize = "10px";
+             atual.style.display = "flex";
+             atual.style.alignItems = "center";
+             atual.style.justifyContent = "center";
         }
-        console.log("fim")
-        markThePath()
+
+        if(atual == goal){
+            console.log("Objetivo alcançado!");
+            break;
+        }
+
+        openCells(atual);
+
+        await sleep(20);
     }
-    else{
-        alert("Mapa invalido")
-    }
+
+    markThePath();
 }
 
 function markThePath(){
-    let mark = goal.getAttribute("path").split(',')
+    if(!goal.getAttribute("path")) return;
+
+    let mark = goal.getAttribute("path").split(',');
+
+    document.querySelectorAll(".path").forEach(el => el.classList.remove("path"));
+
     close.forEach(element => {
         if(mark.includes(element.getAttribute("number"))){
-            element.classList.add("path")
+            element.classList.add("path");
             element.innerHTML = "";
+            element.style.backgroundColor = "";
         }
     });
+
+    goal.classList.add("path");
+    goal.style.backgroundColor = "#4ff54f";
 }
 
-path.addEventListener("click",()=>{
-    explore()
-})
+pathBtn.addEventListener("click", () => {
+    explore();
+});
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
