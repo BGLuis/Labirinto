@@ -24,15 +24,14 @@ body{
     aspect-ratio: 1/1;
     border: 4px solid blue;
     margin-bottom: 10px;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    display: grid;
 }
 .px{
-    display: inline-block;
     border: 1px solid #000;
     aspect-ratio: 1/1;
-    flex: none;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
 }
 .px.fechado::before{
     content: '';
@@ -41,6 +40,9 @@ body{
     aspect-ratio: 1/1;
     border-radius: 20px;
     background-color: red;
+    margin: auto;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .px.path{
