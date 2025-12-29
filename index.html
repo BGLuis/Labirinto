@@ -12,19 +12,70 @@
 </head>
 
 <body onload="makeMaze()">
-    <main>
-        <div id="maps"></div>
-        <div id="input">
-            <input type="range" name="range" id="range" value="15" min="5" max="30" />
-            <input type="radio" value="1" name="oper" /> Lapis
-            <input type="radio" value="0" name="oper" /> Borracha
-            <input type="radio" value="9" name="oper" /> Objetivo
-            <input type="radio" value="8" name="oper" checked /> Inicio
-            <button id="path">Fazer caminho</button>
-            <button id="generate">Gerar Automático</button>
-            <button id="clear">Limpar o mapa</button>
-        </div>
-    </main>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="control-group">
+                <h3>Tamanho</h3>
+                <input type="range" name="range" id="range" value="15" min="5" max="30" />
+            </div>
+
+            <div class="control-group">
+                <h3>Geração</h3>
+                <label for="gen-algo">Algoritmo:</label>
+                <select id="gen-algo" class="select-input">
+                    <option value="dfs">Backtracker (Sinuoso)</option>
+                    <option value="prim">Prim (Ramificado)</option>
+                    <option value="division">Divisão Recursiva</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <h3>Busca (A*)</h3>
+                <label for="heuristic">Heurística:</label>
+                <select id="heuristic" class="select-input">
+                    <option value="euclidean">Euclidiana</option>
+                    <option value="manhattan">Manhattan</option>
+                    <option value="dijkstra">Dijkstra (Sem Heurística)</option>
+                </select>
+                <label class="tool-item">
+                    <input type="checkbox" id="heatmap" />
+                    <span>Mapa de Calor</span>
+                </label>
+            </div>
+
+            <div class="control-group tools">
+                <h3>Ferramentas</h3>
+                <label class="tool-item">
+                    <input type="radio" value="1" name="oper" />
+                    <span>Lapis</span>
+                </label>
+                <label class="tool-item">
+                    <input type="radio" value="0" name="oper" />
+                    <span>Borracha</span>
+                </label>
+                <label class="tool-item">
+                    <input type="radio" value="8" name="oper" checked />
+                    <span>Inicio (Azul)</span>
+                </label>
+                <label class="tool-item">
+                    <input type="radio" value="9" name="oper" />
+                    <span>Objetivo (Verde)</span>
+                </label>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <button id="generate" class="btn primary">Gerar Automático</button>
+                <button id="path" class="btn success">Fazer caminho</button>
+                <button id="clear" class="btn danger">Limpar tudo</button>
+            </header>
+
+            <div id="maps-container">
+                <div id="maps"></div>
+            </div>
+        </main>
+    </div>
 </body>
 
 </html>
