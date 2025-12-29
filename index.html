@@ -8,6 +8,7 @@
     <script defer src="labirinto.js"></script>
     <script defer src="hunter.js"></script>
     <script defer src="generator.js"></script>
+    <script defer src="player.js"></script>
     <title>Labirinto</title>
 </head>
 
@@ -17,6 +18,14 @@
             <div class="control-group">
                 <h3>Tamanho</h3>
                 <input type="range" name="range" id="range" value="15" min="5" max="30" />
+            </div>
+
+            <div class="control-group">
+                <h3>Modo de Jogo</h3>
+                <label class="tool-item">
+                    <input type="checkbox" id="toggle-player" checked />
+                    <span>Mostrar Jogador</span>
+                </label>
             </div>
 
             <div class="control-group">
@@ -37,10 +46,15 @@
                     <option value="manhattan">Manhattan</option>
                     <option value="dijkstra">Dijkstra (Sem Heurística)</option>
                 </select>
+
                 <label class="tool-item">
                     <input type="checkbox" id="heatmap" />
                     <span>Mapa de Calor</span>
                 </label>
+
+                <label for="speed-range">Velocidade:</label>
+                <input type="range" id="speed-range" min="0" max="200" value="180"
+                    title="Esquerda: Lento, Direita: Rápido" />
             </div>
 
             <div class="control-group tools">
@@ -71,8 +85,23 @@
                 <button id="clear" class="btn danger">Limpar tudo</button>
             </header>
 
+            <div id="countdown" class="countdown-overlay" style="display: none;">3</div>
+
             <div id="maps-container">
-                <div id="maps"></div>
+                <div class="map-wrapper">
+                    <div class="map-title">Visão do Bot <span id="bot-time"
+                            style="font-weight: normal; color: #888; font-size: 0.8rem; margin-left: 10px;"></span>
+                    </div>
+                    <div id="maps" class="grid-map"></div>
+                </div>
+
+                <div class="map-wrapper">
+                    <div class="map-title">Jogador (Setas) <span id="player-time"
+                            style="font-weight: normal; color: #888; font-size: 0.8rem; margin-left: 10px;"></span>
+                        <span id="time-diff" style="font-weight: bold; font-size: 0.8rem; margin-left: 5px;"></span>
+                    </div>
+                    <div id="maps-player" class="grid-map"></div>
+                </div>
             </div>
         </main>
     </div>

@@ -33,6 +33,8 @@ function makeMaze(){
     }
 
     maps.appendChild(fragment);
+
+    document.dispatchEvent(new Event('mazeUpdated'));
 }
 
 function applyTool(quadrante) {
@@ -66,6 +68,7 @@ function applyTool(quadrante) {
             quadrante.setAttribute("cell", 9);
             break;
     }
+    document.dispatchEvent(new Event('mazeUpdated'));
 }
 
 maps.addEventListener("mousedown", (e) => {

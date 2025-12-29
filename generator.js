@@ -63,6 +63,7 @@ function setStartEnd(size, cells) {
         end.setAttribute("cell", "9");
         end.style.background = "#4ff54f";
     }
+    document.dispatchEvent(new Event('mazeUpdated'));
 }
 
 

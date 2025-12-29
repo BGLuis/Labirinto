@@ -5,6 +5,7 @@ let close = [];
 let goal;
 const cost = 1;
 
+
 function getSettings() {
     const heuristicSelect = document.querySelector("#heuristic");
     const heatmapCheck = document.querySelector("#heatmap");
@@ -44,14 +45,14 @@ function mazeJson() {
             else if (cell == "9") b.style.background = "#4ff54f";
             else b.style.background = "#fff";
 
-            if(cell == 8) { // Início
+            if(cell == 8) {
                 b.setAttribute("g", 0);
                 b.setAttribute("status", 0);
-                b.setAttribute("path", b.getAttribute("number")); // Caminho começa nele mesmo
+                b.setAttribute("path", b.getAttribute("number"));
                 open.push(b);
                 ini++;
             }
-            if(cell == 9) { // Objetivo
+            if(cell == 9) {
                 goal = b;
                 obj++;
             }
@@ -103,7 +104,6 @@ function openCells(atual) {
             const vizinho = map[nx][ny];
 
             if (vizinho.getAttribute("cell") != 1 && vizinho.getAttribute("status") == 0) {
-
                 if (!open.includes(vizinho)) {
                     vizinho.setAttribute("g", parseInt(atual.getAttribute("g")) + cost);
                     vizinho.setAttribute("path", atual.getAttribute("path") + "," + vizinho.getAttribute("number"));
@@ -140,12 +140,15 @@ async function explore() {
     if(!mazeJson()) return;
 
     const settings = getSettings();
+    const timeDisplay = document.querySelector("#bot-time");
+    timeDisplay.innerHTML = "Resolvendo...";
+    timeDisplay.removeAttribute('data-time');
+    const startTime = performance.now();
 
     while (open.length > 0) {
         let atual = getBestNode(open);
 
         open.splice(open.indexOf(atual), 1);
-
         close.push(atual);
 
         atual.classList.add("fechado");
@@ -165,13 +168,42 @@ async function explore() {
         }
 
         if(atual == goal){
+            const endTime = performance.now();
+            const duration = ((endTime - startTime) / 1000).toFixed(2);
+            timeDisplay.innerHTML = `Resolvido em ${duration}s`;
+            timeDisplay.setAttribute('data-time', duration);
+
+
+            const playerTimeEl = document.getElementById('player-time');
+            const playerDuration = parseFloat(playerTimeEl.getAttribute('data-time'));
+
+            if (playerDuration) {
+                const diff = (playerDuration - duration).toFixed(2);
+                const diffEl = document.getElementById('time-diff');
+
+                if (diff < 0) {
+                    diffEl.innerHTML = `(${diff}s)`;
+                    diffEl.style.color = "green";
+                } else {
+                    diffEl.innerHTML = `(+${diff}s)`;
+                    diffEl.style.color = "red";
+                }
+            }
+
             console.log("Objetivo alcançado!");
             break;
         }
 
         openCells(atual);
 
-        await sleep(20);
+        const speedVal = parseInt(document.querySelector("#speed-range").value);
+        const delay = 200 - speedVal;
+
+        await sleep(delay);
+    }
+
+    if (open.length === 0 && !close.includes(goal)) {
+        timeDisplay.innerHTML = "Sem caminho!";
     }
 
     markThePath();
@@ -196,8 +228,63 @@ function markThePath(){
     goal.style.backgroundColor = "#4ff54f";
 }
 
-pathBtn.addEventListener("click", () => {
-    explore();
+
+pathBtn.addEventListener("click", async () => {
+
+    const blocks = document.querySelectorAll('#maps .px');
+    blocks.forEach(b => {
+        b.classList.remove("fechado", "path", "heatmap-active");
+        b.innerHTML = "";
+        b.style.backgroundColor = "";
+
+
+        const cell = b.getAttribute("cell");
+        if (cell == "1") b.style.background = "#000";
+        else if (cell == "8") b.style.background = "#0000ff";
+        else if (cell == "9") b.style.background = "#4ff54f";
+        else b.style.background = "#fff";
+
+
+        b.setAttribute("g", "");
+        b.setAttribute("status", "0");
+        b.setAttribute("path", "");
+    });
+
+
+    document.dispatchEvent(new Event('mazeUpdated'));
+
+
+    document.getElementById('player-time').removeAttribute('data-time');
+
+    const playerActive = document.getElementById('toggle-player').checked;
+
+    if (playerActive) {
+
+        const countdownEl = document.getElementById('countdown');
+        countdownEl.style.display = 'flex';
+
+
+        countdownEl.innerText = "3";
+        await sleep(1000);
+
+
+        countdownEl.innerText = "2";
+        await sleep(1000);
+
+
+        countdownEl.innerText = "1";
+        await sleep(1000);
+
+
+        countdownEl.innerText = "GO!";
+        await sleep(500);
+
+        countdownEl.style.display = 'none';
+        explore();
+    } else {
+
+        explore();
+    }
 });
 
 function sleep(ms) {
