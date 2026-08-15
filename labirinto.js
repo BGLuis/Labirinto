@@ -9,6 +9,7 @@ function makeMaze(){
     const size = parseInt(range.value);
 
     maps.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+    maps.style.gridTemplateRows = `repeat(${size}, 1fr)`;
 
     const fragment = document.createDocumentFragment();
     let cont = 0;
@@ -89,6 +90,27 @@ window.addEventListener("mouseup", () => {
     isMouseDown = false;
 });
 
+function quadranteFromTouch(touch) {
+    return document.elementFromPoint(touch.clientX, touch.clientY)?.closest('.px');
+}
+
+maps.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    isMouseDown = true;
+    applyTool(quadranteFromTouch(e.touches[0]));
+}, { passive: false });
+
+maps.addEventListener("touchmove", (e) => {
+    e.preventDefault();
+    if (isMouseDown) {
+        applyTool(quadranteFromTouch(e.touches[0]));
+    }
+}, { passive: false });
+
+window.addEventListener("touchend", () => {
+    isMouseDown = false;
+});
+
 
 clear.addEventListener("click", () => {
     makeMaze();
@@ -97,3 +119,5 @@ clear.addEventListener("click", () => {
 range.addEventListener("input", () => {
     makeMaze();
 });
+
+makeMaze();

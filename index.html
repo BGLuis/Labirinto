@@ -12,12 +12,12 @@
     <title>Labirinto</title>
 </head>
 
-<body onload="makeMaze()">
+<body>
     <div class="app-container">
         <aside class="sidebar">
             <div class="control-group">
                 <h3>Tamanho</h3>
-                <input type="range" name="range" id="range" value="15" min="5" max="30" />
+                <input type="range" name="range" id="range" value="15" min="5" max="29" step="2" />
             </div>
 
             <div class="control-group">
@@ -35,11 +35,20 @@
                     <option value="dfs">Backtracker (Sinuoso)</option>
                     <option value="prim">Prim (Ramificado)</option>
                     <option value="division">Divisão Recursiva</option>
+                    <option value="kruskal">Kruskal (Uniforme)</option>
+                    <option value="wilson">Wilson (Sem Viés)</option>
                 </select>
             </div>
 
             <div class="control-group">
-                <h3>Busca (A*)</h3>
+                <h3>Busca</h3>
+                <label for="search-algo">Algoritmo:</label>
+                <select id="search-algo" class="select-input">
+                    <option value="astar">A*</option>
+                    <option value="greedy">Busca Gulosa</option>
+                    <option value="bfs">BFS</option>
+                </select>
+
                 <label for="heuristic">Heurística:</label>
                 <select id="heuristic" class="select-input">
                     <option value="euclidean">Euclidiana</option>

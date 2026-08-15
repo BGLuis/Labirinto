@@ -10,6 +10,7 @@ function syncMaps() {
 
     playerMap.innerHTML = botMap.innerHTML;
     playerMap.style.gridTemplateColumns = botMap.style.gridTemplateColumns;
+    playerMap.style.gridTemplateRows = botMap.style.gridTemplateRows;
 
     const cells = playerMap.querySelectorAll('.px');
     cells.forEach(c => {
@@ -147,22 +148,7 @@ function finishGame() {
 
     const botTimeEl = document.getElementById('bot-time');
     const botDuration = parseFloat(botTimeEl.getAttribute('data-time'));
-    if (botDuration) {
-        const diff = (duration - botDuration).toFixed(2);
-        const diffEl = document.getElementById('time-diff');
-
-        if (diff < 0) {
-            diffEl.innerHTML = `(${diff}s)`;
-            diffEl.style.color = "green";
-        } else {
-            diffEl.innerHTML = `(+${diff}s)`;
-            diffEl.style.color = "red";
-        }
-    } else {
-        const diffEl = document.getElementById('time-diff');
-        diffEl.innerHTML = "(Aguardando Bot...)";
-        diffEl.style.color = "green";
-    }
+    updateTimeDiff(duration, botDuration, "(Aguardando Bot...)");
 }
 
 document.addEventListener('mazeUpdated', syncMaps);

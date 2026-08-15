@@ -9,9 +9,11 @@ const cost = 1;
 function getSettings() {
     const heuristicSelect = document.querySelector("#heuristic");
     const heatmapCheck = document.querySelector("#heatmap");
+    const algoSelect = document.querySelector("#search-algo");
     return {
         heuristic: heuristicSelect ? heuristicSelect.value : 'euclidean',
-        heatmap: heatmapCheck ? heatmapCheck.checked : false
+        heatmap: heatmapCheck ? heatmapCheck.checked : false,
+        algorithm: algoSelect ? algoSelect.value : 'astar'
     };
 }
 
@@ -114,14 +116,14 @@ function openCells(atual) {
     });
 }
 
-function getBestNode(nodes) {
+function getBestNode(nodes, algorithm) {
     let minF = Number.MAX_VALUE;
     let bestNode = null;
 
     nodes.forEach(cell => {
         const g = parseInt(cell.getAttribute("g"));
         const h = calculateHeuristic(cell);
-        const f = g + h;
+        const f = algorithm === 'greedy' ? h : g + h;
 
         if (f < minF) {
             minF = f;
@@ -136,6 +138,23 @@ function getHeatColor(g) {
     return `hsl(${hue}, 100%, 50%)`;
 }
 
+function updateTimeDiff(playerTime, botTime, waitingMessage) {
+    const diffEl = document.getElementById('time-diff');
+
+    if (!botTime) {
+        if (waitingMessage) {
+            diffEl.innerHTML = waitingMessage;
+            diffEl.style.color = "green";
+        }
+        return;
+    }
+    if (!playerTime) return;
+
+    const diff = (playerTime - botTime).toFixed(2);
+    diffEl.innerHTML = diff < 0 ? `(${diff}s)` : `(+${diff}s)`;
+    diffEl.style.color = diff < 0 ? "green" : "red";
+}
+
 async function explore() {
     if(!mazeJson()) return;
 
@@ -146,9 +165,13 @@ async function explore() {
     const startTime = performance.now();
 
     while (open.length > 0) {
-        let atual = getBestNode(open);
-
-        open.splice(open.indexOf(atual), 1);
+        let atual;
+        if (settings.algorithm === 'bfs') {
+            atual = open.shift();
+        } else {
+            atual = getBestNode(open, settings.algorithm);
+            open.splice(open.indexOf(atual), 1);
+        }
         close.push(atual);
 
         atual.classList.add("fechado");
@@ -177,18 +200,7 @@ async function explore() {
             const playerTimeEl = document.getElementById('player-time');
             const playerDuration = parseFloat(playerTimeEl.getAttribute('data-time'));
 
-            if (playerDuration) {
-                const diff = (playerDuration - duration).toFixed(2);
-                const diffEl = document.getElementById('time-diff');
-
-                if (diff < 0) {
-                    diffEl.innerHTML = `(${diff}s)`;
-                    diffEl.style.color = "green";
-                } else {
-                    diffEl.innerHTML = `(+${diff}s)`;
-                    diffEl.style.color = "red";
-                }
-            }
+            updateTimeDiff(playerDuration, duration);
 
             console.log("Objetivo alcançado!");
             break;

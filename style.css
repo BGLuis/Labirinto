@@ -213,3 +213,34 @@ html, body {
     50% { transform: scale(1.1); opacity: 0.8; }
     100% { transform: scale(1); opacity: 1; }
 }
+
+@media (max-width: 900px) {
+    html, body {
+        height: auto;
+        overflow: auto;
+    }
+
+    .app-container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+    }
+
+    #maps-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .grid-map {
+        width: min(90vw, 60vh);
+    }
+
+    .countdown-overlay {
+        font-size: 6rem;
+    }
+}

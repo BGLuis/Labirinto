@@ -245,6 +245,111 @@ function generateDivision() {
     setStartEnd(size, cells);
 }
 
+function openMazeCell(x, y, size, cells) {
+    const c = getCell(x, y, size, cells);
+    if (c) {
+        c.style.background = "#fff";
+        c.setAttribute("cell", "0");
+    }
+}
+
+function generateKruskal() {
+    const { size, cells } = resetGrid("wall");
+
+    const key = (x, y) => `${x},${y}`;
+    const parent = new Map();
+
+    const find = (k) => {
+        while (parent.get(k) !== k) {
+            parent.set(k, parent.get(parent.get(k)));
+            k = parent.get(k);
+        }
+        return k;
+    };
+
+    const union = (a, b) => {
+        const ra = find(a);
+        const rb = find(b);
+        if (ra === rb) return false;
+        parent.set(ra, rb);
+        return true;
+    };
+
+    const edges = [];
+
+    for (let y = 0; y < size; y += 2) {
+        for (let x = 0; x < size; x += 2) {
+            parent.set(key(x, y), key(x, y));
+
+            if (x + 2 < size) edges.push({ ax: x, ay: y, bx: x + 2, by: y, wx: x + 1, wy: y });
+            if (y + 2 < size) edges.push({ ax: x, ay: y, bx: x, by: y + 2, wx: x, wy: y + 1 });
+        }
+    }
+
+    for (let i = edges.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [edges[i], edges[j]] = [edges[j], edges[i]];
+    }
+
+    edges.forEach(edge => {
+        if (union(key(edge.ax, edge.ay), key(edge.bx, edge.by))) {
+            openMazeCell(edge.ax, edge.ay, size, cells);
+            openMazeCell(edge.bx, edge.by, size, cells);
+            openMazeCell(edge.wx, edge.wy, size, cells);
+        }
+    });
+
+    setStartEnd(size, cells);
+}
+
+function generateWilson() {
+    const { size, cells } = resetGrid("wall");
+
+    const cellPositions = [];
+    for (let y = 0; y < size; y += 2) {
+        for (let x = 0; x < size; x += 2) {
+            cellPositions.push({ x, y });
+        }
+    }
+
+    const key = (x, y) => `${x},${y}`;
+    const inMaze = new Set();
+    const dirs = [{ dx: 0, dy: -2 }, { dx: 0, dy: 2 }, { dx: -2, dy: 0 }, { dx: 2, dy: 0 }];
+
+    const first = cellPositions[Math.floor(Math.random() * cellPositions.length)];
+    inMaze.add(key(first.x, first.y));
+    openMazeCell(first.x, first.y, size, cells);
+
+    cellPositions.forEach(start => {
+        if (inMaze.has(key(start.x, start.y))) return;
+
+        let path = [start];
+        let current = start;
+
+        while (!inMaze.has(key(current.x, current.y))) {
+            const dir = dirs[Math.floor(Math.random() * dirs.length)];
+            const next = { x: current.x + dir.dx, y: current.y + dir.dy };
+
+            if (next.x < 0 || next.y < 0 || next.x >= size || next.y >= size) continue;
+
+            const loopIndex = path.findIndex(p => p.x === next.x && p.y === next.y);
+            path = loopIndex !== -1 ? path.slice(0, loopIndex + 1) : [...path, next];
+            current = next;
+        }
+
+        path.forEach((p, i) => {
+            inMaze.add(key(p.x, p.y));
+            openMazeCell(p.x, p.y, size, cells);
+            if (i > 0) {
+                const prev = path[i - 1];
+                openMazeCell((prev.x + p.x) / 2, (prev.y + p.y) / 2, size, cells);
+            }
+        });
+    });
+
+    setStartEnd(size, cells);
+}
+
 function generateMaze() {
     const algo = document.querySelector("#gen-algo").value;
 
@@ -252,6 +357,10 @@ function generateMaze() {
         generatePrim();
     } else if (algo === 'division') {
         generateDivision();
+    } else if (algo === 'kruskal') {
+        generateKruskal();
+    } else if (algo === 'wilson') {
+        generateWilson();
     } else {
         generateDFS();
     }
