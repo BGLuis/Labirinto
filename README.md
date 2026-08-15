@@ -1,31 +1,64 @@
-# Labirinto
+<div align="center">
 
-Gerador e resolvedor de labirintos em JavaScript puro, com um modo de jogo onde
-você compete contra o bot para ver quem chega primeiro ao objetivo.
+<!-- Badges de Status do GitHub -->
+![GitHub Stars](https://www.shieldcn.dev/github/stars/bgluis/Labirinto.svg?variant=secondary&size=sm)
+![GitHub Forks](https://www.shieldcn.dev/github/forks/bgluis/Labirinto.svg?variant=secondary&size=sm)
+![Watchers](https://www.shieldcn.dev/github/watchers/bgluis/Labirinto.svg?variant=secondary&size=sm)
+![Contributors](https://www.shieldcn.dev/github/contributors/bgluis/Labirinto.svg?theme=emerald&size=sm)
+![License](https://www.shieldcn.dev/github/license/bgluis/Labirinto.svg?variant=ghost&size=sm)
 
-Abra o `index.html` no navegador — não há build nem dependências.
+<br/>
 
-## Funcionalidades
+<!-- Badges das Tecnologias Utilizadas -->
+![JavaScript](https://www.shieldcn.dev/badge/JavaScript-F7DF1E.svg?logo=javascript&variant=branded&size=sm)
+![HTML5](https://www.shieldcn.dev/badge/HTML5-E34F26.svg?logo=html5&variant=branded&size=sm)
+![CSS3](https://www.shieldcn.dev/badge/CSS3-1572B6.svg?logo=css3&variant=branded&size=sm)
 
-- **Geração automática** com três algoritmos:
-  - Backtracker recursivo (DFS) — labirintos sinuosos, com um único caminho longo.
-  - Prim aleatório — labirintos mais ramificados, com vários caminhos curtos.
-  - Divisão recursiva — divide a área em salas com paredes e aberturas aleatórias.
-- **Edição manual** do labirinto com lápis, borracha e marcadores de início/objetivo.
-- **Busca de caminho** com A*, com três heurísticas selecionáveis:
-  - Euclidiana, Manhattan ou Dijkstra (sem heurística, busca em custo uniforme).
-- **Mapa de calor** opcional mostrando o custo (`g`) de cada célula explorada.
-- **Modo jogador**: controle um segundo personagem com as setas do teclado e
-  compare seu tempo contra o do bot.
+  <h3>Labirinto</h3>
+  Gerador e solucionador interativo de labirintos construído com Vanilla JS, HTML e CSS.
 
-## Controles
+*Leia isto em outros idiomas: [English](README-en.md).*
+</div>
 
-| Ferramenta | Efeito |
-|---|---|
-| Lápis | Pinta parede |
-| Borracha | Apaga parede |
-| Início (Azul) | Define a célula inicial |
-| Objetivo (Verde) | Define a célula objetivo |
+# 📖 Sobre
+O **Labirinto** é uma aplicação web interativa que permite a geração, visualização e resolução de labirintos utilizando diferentes algoritmos. Construído puramente com HTML, CSS e JavaScript (sem frameworks adicionais), o projeto demonstra o funcionamento prático de algoritmos clássicos de busca, como A*, Busca Gulosa e BFS (Breadth-First Search), assim como diferentes heurísticas e estratégias de geração (Kruskal, DFS, Prim, etc.). O usuário pode configurar o tamanho do mapa, obstáculos e a velocidade da busca em tempo real.
 
-O tamanho do labirinto é sempre ímpar (5 a 29), já que os algoritmos de geração
-escavam células em passos de 2 a partir do canto superior esquerdo.
+# 📋 Motivo
+Foi implementado com o motivo de depois tentar criar um mapa mais complexo, uma tentativa para criar um mapa universitário para guiar alunos pelo campus.
+
+# 💻 Como iniciar
+
+### Requisitos
+- Apenas um navegador web atualizado (ex: [Google Chrome](https://www.google.com/chrome/), [Mozilla Firefox](https://www.mozilla.org/pt-BR/firefox/new/)).
+
+### Instalação
+
+#### Execução Nativa / Manual
+Por se tratar de um projeto com arquivos estáticos, não há necessidade de um servidor robusto ou de instalar dependências.
+
+1. Clone o repositório do projeto:
+  ```sh
+  git clone https://github.com/bgluis/Labirinto.git
+  ```
+
+2. Navegue até o diretório do projeto:
+  ```sh
+  cd Labirinto
+  ```
+
+3. Abra o arquivo `index.html` em seu navegador:
+  ```sh
+  # No Windows
+  start index.html
+  
+  # No Linux
+  xdg-open index.html
+  
+  # No macOS
+  open index.html
+  ```
+
+# 🤝 Contribuidores
+ <a href="https://github.com/bgluis/Labirinto/graphs/contributors">
+   <img src="https://contrib.rocks/image?repo=bgluis/Labirinto"/>
+ </a>
